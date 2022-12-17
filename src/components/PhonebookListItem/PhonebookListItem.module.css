@@ -1,0 +1,22 @@
+.PhonebookList__item {
+    padding: 12px 20px;
+}
+
+.PhonebookList__text {
+    margin: 5px;
+}
+
+.PhonebookList__button {
+    float: right;
+    padding: 7px;
+    cursor: pointer;
+    background-color: #dc3545;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 10px;
+}
+
+.PhonebookList__button:hover {
+    background-color: #56ca5c;
+}
