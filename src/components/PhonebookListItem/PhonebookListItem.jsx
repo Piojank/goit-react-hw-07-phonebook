@@ -1,38 +1,51 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { deleteContact } from "../../features/contacts";
-import { store } from "../../app/store";
-import { saveToLocalStore } from "../../utils/localStorage";
 import style from './PhonebookListItem.module.css';
+import { useSelector } from "react-redux";
+import {
+    useGetContactsQuery,
+    useDeleteContactMutation,
+} from "../../utils/api.js";
 
-const showContacts = (contacts, filter) => {
-    const normalizedFilter = contacts.filter.toLowerCase().trim();
 
-    return contacts.contacts.filter((contact) =>
-        contact.name.toLowerCase().includes(normalizedFilter)
+const showContacts = (data, filter) => {
+    const normalizedFilter = filter.toLowerCase().trim();
+
+    return data.filter(
+        (contact) =>
+        contact.name.toLowerCase().includes(normalizedFilter) ||
+        contact.phone.includes(normalizedFilter)
     );
     };
 
-    const Contacts = () => {
-    const contacts = useSelector(({ contacts, filter }) =>
-        showContacts(contacts, filter)
-    );
-    saveToLocalStore("CONTACTS", contacts);
+const Contacts = () => {
+    const { data, isError, isLoading } = useGetContactsQuery();
+    const [deleteContact] = useDeleteContactMutation();
+
+    const filter = useSelector((state) => state.contacts.filter);
 
     return (
         <>
-        {contacts.map(({ id, name, number }) => (
-            <li className={style.PhonebookList__item} key={id}>
-                <span className={style.PhonebookList__text}>{name}: </span>
-                <span className={style.PhonebookList__text}>{number}: </span>
-            <button
-                type="button"
-                className={style.PhonebookList__button}
-                onClick={() => store.dispatch(deleteContact(id))}>
-                Delete
-            </button>
-            </li>
-        ))}
+        {isError ? (
+            <>Error...</>
+        ) : isLoading ? (
+            <>Loading...</>
+        ) : data ? (
+            <>
+            {showContacts(data, filter).map(({ id, name, phone }) => (
+                <li className={style.PhonebookList__item} key={id}>
+                    <span className={style.PhonebookList__text}>{name}: </span>
+                    <span className={style.PhonebookList__text}>{phone}: </span>
+                <button
+                    type="button"
+                    className={style.PhonebookList__button}
+                    id={id}
+                    onClick={() => {deleteContact(id)}}>
+                    Delete
+                </button>
+                </li>
+            ))}
+            </>
+        ) : null}
         </>
     );
 };

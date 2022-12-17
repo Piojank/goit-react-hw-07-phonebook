@@ -18,6 +18,7 @@ export const Filter = () => {
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Find contacts by name"
             onChange={onFilter}
+            placeholder="Filter Contacts"
         />
         </label>
     </div>
