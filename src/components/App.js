@@ -1,5 +1,5 @@
 import React from "react";
-import ContactForm from "./components/ContactForm/ContactForm";
+import ContactForm from "./ContactForm/ContactForm";
 import PhonebookList from "components/PhonebookList/PhonebookList"
 import { Filter } from "components/Filter/Filter";
 // import { store } from "./app/store";
