@@ -1,47 +1,61 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { nanoid } from 'nanoid';
-import { Notify } from "notiflix";
-import { initialContacts } from 'utils/contacts';
+import { createSlice } from "@reduxjs/toolkit";
+import { getContacts, addContact, deleteContact } from "utils/api";
 
 const contactsSlice = createSlice({
-    name: 'contacts',
+    name: "contacts",
     initialState: {
-        filter: '',
-        contacts: initialContacts(),
+        items: [],
+        filter: "",
+        loading: false,
+        error: null,
     },
+
     reducers: {
-        addContact: (state, action) => {
-            const id = nanoid(6);
-            const name = action.payload.name;
-            const number = action.payload.number;
-            const contactList = [...state.contacts];
-            
-            if (contactList.findIndex(
-                    contact => name === contact.name
-                ) !== -1
-            ) {
-                Notify.failure(`${name} is already in contacts!`);
-            } else {
-                contactList.push({ name, id, number });
-            }
-            state.contacts = contactList;
+        filteredContacts: (state, action) => {
+            state.filter = action.payload;
         },
-        
-        deleteContact: (state, action) => {
-            const { id } = action.payload;
-            const contact = state.contacts.find(el => el.id === id);
+    },
 
-            if (contact) {
-                const { name, number } = contact;
+    extraReducers: {
+        [getContacts.pending]: state => {
+            state.loading = true;
+        },
+        [addContact.pending]: state => {
+            state.loading = true;
+        },
+        [deleteContact.pending]: state => {
+            state.loading = true;
+        },
 
-                state.contacts = state.contacts.filter(contact => contact.id !== id);
-    
-                Notify.warning(`Contact has been deleted! Name: ${name}, Phone number: ${number}.`);
-            };
+        [getContacts.fulfilled]: (state, action) => {
+            state.items = action.payload;
+            state.loading = false;
+        },
+        [addContact.fulfilled]: (state, action) => {
+            state.items.push(action.payload);
+            state.loading = false;
+        },
+        [deleteContact.fulfilled]: (state, action) => {
+            state.items = state.items.filter(({ id }) => id !== action.payload);
+            state.loading = false;
+        },
+
+        [getContacts.rejected]: (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+        },
+        [addContact.rejected]: (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+        },
+        [deleteContact.rejected]: (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
         },
     },
 });
 
-export default contactsSlice.reducer;
-export const { addContact, deleteContact } = contactsSlice.actions;
+export const contactsSliceReducer = contactsSlice.reducer;
+
+export const { addNewContact, filteredContacts } = contactsSlice.actions;
 

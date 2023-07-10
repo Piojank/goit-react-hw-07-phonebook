@@ -8,7 +8,7 @@ import { ContactForm } from "./ContactForm/ContactForm";
 import { ContactList } from "./ContactList/ContactList";
 import { Filter } from "./Filter/Filter";
 
-import { save } from 'utils/storage';
+import { save } from 'utils/localStorage';
 
 import { addContact, deleteContact } from 'redux/contactsSlice';
 import { setFilter } from 'redux/filterSlice';

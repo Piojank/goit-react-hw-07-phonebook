@@ -1,4 +1,4 @@
-import { load } from "./storage";
+import { load } from "./localStorage";
 
 export const initialContacts = () => {
   const lsData = load('contacts');
