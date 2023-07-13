@@ -1,29 +1,13 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
 import s from './ContactForm.module.css';
+import { Spinner } from 'components/Spinner/Spinner';
+import { useAddContact } from 'hooks/useAddContact';
 
-const INITIAL_STATE = {
-    name: '',
-    number: '',
-};
-
-export const ContactForm = ({ handleSubmit }) => {
-    const [name, setName] = useState(INITIAL_STATE.name);
-    const [number, setNumber] = useState(INITIAL_STATE.number);
-
-    const onSubmit = event => {
-        event.preventDefault();
-        onSubmit && handleSubmit({ name: name, number: number });
-        reset();
-    };
-
-    const reset = () => {
-        setName(INITIAL_STATE.name);
-        setNumber(INITIAL_STATE.number);
-    };
+export const ContactForm = () => {
+    const { name, number, handleSubmit, handleChangeInput, localLoading } =
+    useAddContact();
 
     return (
-        <form className={s.form} onSubmit={onSubmit}>
+        <form className={s.form} onSubmit={handleSubmit}>
             <label className={s.label}>
                 Name
                 <input 
@@ -31,8 +15,7 @@ export const ContactForm = ({ handleSubmit }) => {
                     type="name" 
                     name="name"
                     value={name}
-                    onChange={event => setName(event.target.value)}
-                    pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+                    onChange={handleChangeInput}
                     title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                     placeholder='Enter name'
                     required
@@ -45,8 +28,7 @@ export const ContactForm = ({ handleSubmit }) => {
                     type="phone" 
                     name="number"
                     value={number}
-                    onChange={event => setNumber(event.target.value)}
-                    pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+                    onChange={handleChangeInput}
                     title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                     placeholder='Enter phone number'
                     required
@@ -55,11 +37,8 @@ export const ContactForm = ({ handleSubmit }) => {
 
             <button type="submit" className={s.btn} disabled={!name && !number}>
                 Add contact
+                {localLoading && <Spinner size={10} />}
             </button>
         </form>
     );
-};
-
-ContactForm.propTypes = {
-    handleSubmit: PropTypes.func.isRequired,
 };
