@@ -18,9 +18,9 @@ export const ContactListItem = ({ name, number, id }) => {
         }
     }, [globalLoading]);
 
-    const handleDeleteContact = contactId => {
+    const handleDeleteContact = id => {
         setLocalLoading(true);
-        dispatch(deleteContact(contactId));
+        dispatch(deleteContact(id));
     };
 
     return (
